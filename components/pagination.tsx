@@ -19,11 +19,14 @@ export default function Pagination(props: propsModel) {
         }
       }}
       innerClass="flex h-9 justify-center"
-      activeClass="bg-primary px-2 text-white border-r-0 border-l-0"
+      activeClass="bg-primary px-2 text-white border-r-0 border-l-0 hover:!cursor-default"
+      activeLinkClass="hover:!cursor-default"
       itemClass="px-2 w-10 flex justify-center items-center hover:bg-primary hover:text-white text-primary border hover:cursor-pointer border-r-0"
-      itemClassFirst="rounded-tl rounded-bl"
+      itemClassFirst="rounded-tl rounded-bl border-r-0"
       itemClassLast="rounded-tr rounded-br border-r"
-      disabledClass="text-secondary hover:cursor-default hover:bg-white hover:text-secondary"
+      itemClassPrev=""
+      itemClassNext=""
+      disabledClass="text-secondary hover:!cursor-default hover:bg-white hover:!text-secondary"
       linkClassFirst={
         page.page === 1 ? `hover:cursor-default` : `hover:cursor-pointer`
       }
