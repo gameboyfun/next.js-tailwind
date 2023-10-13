@@ -1,29 +1,33 @@
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 export default {
   items: [
     {
       name: "Item 1",
       url: "/1",
-      icon: `fa-solid fa-chart-line`,
+      icon: faUser,
       children: [
         {
           name: "Item 1.1",
+          role: 1,
           url: "/11",
-          icon: `fa-regular fa-user`,
+          icon: faUser,
         },
         {
           name: "Item 1.2",
           url: "/12",
-          icon: `fa-solid fa-user-shield`,
+          icon: faUser,
           children: [
             {
               name: "Item 1.2.1",
+              role: 2,
               url: "/121",
-              icon: `fa-solid fa-users`,
+              icon: faUser,
             },
             {
               name: "Item 1.2.2",
+              role: 3,
               url: "/122",
-              icon: `fa-regular fa-building`,
+              icon: faUser,
             },
           ],
         },

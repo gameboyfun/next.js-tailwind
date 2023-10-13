@@ -2,20 +2,22 @@ import Paginations from "react-js-pagination";
 import { propsModel } from "@/models/pagination";
 
 export default function Pagination(props: propsModel) {
-  const { page, handleRouteChange, fetchData } = props;
+  const { page, handleRouteChange, fetchData, query } = props;
 
   return (
     <Paginations
-      activePage={parseInt(page.page.toString())}
+      activePage={parseInt(page.page.toString()) || 1}
       itemsCountPerPage={page.size}
       totalItemsCount={page.itemCount}
       pageRangeDisplayed={5}
       onChange={(pageNumber) => {
-        if (handleRouteChange) {
-          handleRouteChange(pageNumber);
-        }
-        if (fetchData) {
-          fetchData(pageNumber);
+        if (page.page !== pageNumber) {
+          if (handleRouteChange) {
+            handleRouteChange(pageNumber);
+          }
+          if (fetchData) {
+            fetchData({ ...query, page: pageNumber });
+          }
         }
       }}
       innerClass="flex h-9 justify-center"
@@ -23,7 +25,7 @@ export default function Pagination(props: propsModel) {
       activeLinkClass="hover:!cursor-default"
       itemClass="px-2 w-10 flex justify-center items-center hover:bg-primary hover:text-white text-primary border hover:cursor-pointer border-r-0"
       itemClassFirst="rounded-tl rounded-bl border-r-0"
-      itemClassLast="rounded-tr rounded-br border-r"
+      itemClassLast="rounded-tr rounded-br !border-r"
       itemClassPrev=""
       itemClassNext=""
       disabledClass="text-secondary hover:!cursor-default hover:bg-white hover:!text-secondary"

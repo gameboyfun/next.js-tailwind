@@ -17,31 +17,32 @@ export interface profileModel {
 }
 
 export interface positionModel {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number | null;
+  name: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface roleGroupModel {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  roles: roleModel[];
+  id: number | null;
+  name: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  roles: roleModel[] | null;
 }
 
 export interface roleModel {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number | null;
+  name: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface fileModel {
-  id: number;
-  url: string;
-  userId: number;
-  createdAt: string;
-  updatedAt: string;
+  id: number | null;
+  url: string | null;
+  userId: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
+

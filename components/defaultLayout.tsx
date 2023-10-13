@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import Footer from "./footer";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useStore } from "../app/store";
 import Link from "next/link";
 import nav from "@/nav";
 import Header from "./header";
+import { NavItem } from "@/models/sidebar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function DefaultLayout({
   children,
@@ -14,6 +16,7 @@ export default function DefaultLayout({
 }) {
   const getMe = useStore((state) => state.getMe);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -47,19 +50,36 @@ export default function DefaultLayout({
                   return (
                     <li key={data.url}>
                       <details>
-                        <summary>{data.name}</summary>
+                        {/* level 1 + children */}
+                        <summary className="hover:bg-primary">
+                          <FontAwesomeIcon icon={data.icon} />
+                          {data.name}
+                        </summary>
                         <ul>
-                          {data.children.map((data) => {
+                          {data.children.map((data: NavItem) => {
                             if (data?.children) {
                               return (
                                 <li key={data.url}>
                                   <details>
-                                    <summary>{data.name}</summary>
+                                    <summary className="hover:bg-primary">
+                                      <FontAwesomeIcon icon={data.icon} />
+                                      {data.name}
+                                    </summary>
                                     <ul>
                                       {data.children.map((data) => {
                                         return (
-                                          <li key={data.url}>
+                                          <li
+                                            key={data.url}
+                                            className={
+                                              pathname.includes(data.url)
+                                                ? `bg-primary-focus hover:bg-primary rounded-md`
+                                                : `hover:bg-primary rounded-md`
+                                            }
+                                          >
                                             <Link href={data.url}>
+                                              <FontAwesomeIcon
+                                                icon={data.icon}
+                                              />
                                               {data.name}
                                             </Link>
                                           </li>
@@ -70,9 +90,20 @@ export default function DefaultLayout({
                                 </li>
                               );
                             } else {
+                              // level 2 no children
                               return (
-                                <li key={data.url}>
-                                  <Link href={data.url}>{data.name}</Link>
+                                <li
+                                  key={data.url}
+                                  className={
+                                    pathname.includes(data.url)
+                                      ? `bg-primary-focus hover:bg-primary rounded-md`
+                                      : `hover:bg-primary rounded-md`
+                                  }
+                                >
+                                  <Link href={data.url}>
+                                    <FontAwesomeIcon icon={data.icon} />
+                                    {data.name}
+                                  </Link>
                                 </li>
                               );
                             }
@@ -83,8 +114,20 @@ export default function DefaultLayout({
                   );
                 } else {
                   return (
-                    <li key={data.url}>
-                      <Link href={data.url}>{data.name}</Link>
+                    // level 1 no children
+                    <li
+                      key={data.url}
+                      className={
+                        data.url === pathname ||
+                        (data.url !== `/` && pathname.includes(data.url))
+                          ? `bg-primary-focus hover:bg-primary rounded-md`
+                          : `hover:bg-primary rounded-md`
+                      }
+                    >
+                      <Link href={data.url}>
+                        <FontAwesomeIcon icon={data.icon} />
+                        {data.name}
+                      </Link>
                     </li>
                   );
                 }

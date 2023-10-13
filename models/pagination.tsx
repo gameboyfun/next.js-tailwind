@@ -1,3 +1,5 @@
+import { queryStaffModel } from "./staff";
+
 export interface PaginationModel {
   page: number;
   size: number;
@@ -8,7 +10,8 @@ export interface PaginationModel {
 }
 
 export interface propsModel {
-    page: PaginationModel,
-    handleRouteChange?: Function,
-    fetchData?: Function,
+  page: PaginationModel;
+  handleRouteChange?: Function;
+  fetchData?: Function;
+  query?: queryStaffModel;
 }

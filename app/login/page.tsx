@@ -77,7 +77,7 @@ export default function Login() {
         <form onSubmit={onLogin}>
           <input
             type="email"
-            className="input input-bordered w-full mb-2 focus:input-primary"
+            className="input input-bordered w-full mb-2 focus:input-primary bg-white"
             name="email"
             onChange={handleInput}
             required
@@ -87,7 +87,7 @@ export default function Login() {
             <input
               type={show ? "text" : "password"}
               placeholder="รหัสผ่าน"
-              className="input input-bordered w-full mb-2 focus:input-primary focus:border-r-1 border-r-0"
+              className="input input-bordered w-full mb-2 focus:input-primary focus:border-r-1 border-r-0 bg-white"
               name="password"
               required
               onChange={handleInput}
