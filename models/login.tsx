@@ -1,4 +1,8 @@
-export interface Login {
-    email: string | null;
-    password: String | null;
+export interface LoginModel {
+    email: string;
+    password: string;
+}
+export interface LoginResponse {
+    accessToken: string;
+    refreshToken: string;
 }

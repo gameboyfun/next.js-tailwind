@@ -1,16 +1,17 @@
 import axiosInstance from "@/axiosInstance";
-import { Login } from "@/models/login";
-import { error } from "console";
+import { LoginModel, LoginResponse } from "@/models/login";
+import { profileModel } from "@/models/profile";
+import axios, { AxiosResponse } from "axios";
 import { create } from "zustand";
 
 type Store = {
-  getMe: any;
   loading: Boolean;
   loaded: Boolean;
   isLoggedIn: Boolean;
-  user: any;
-  login: (formData: Login) => any;
-  logout: () => any;
+  user: profileModel | null;
+  login: (formData: LoginModel) => Promise<AxiosResponse<LoginResponse>>;
+  logout: () => Promise<any>;
+  getMe: () => Promise<profileModel | void>;
 };
 
 export const useStore = create<Store>((set) => ({
@@ -18,14 +19,19 @@ export const useStore = create<Store>((set) => ({
   loaded: true,
   isLoggedIn: false,
   user: null,
-  login: (formData: Login) =>
-    axiosInstance.post("/api/auth/login", formData).then((response) => {
-      localStorage.setItem("token", response.data.token);
-      return response;
-    }),
+  login: (formData: LoginModel) =>
+    axiosInstance
+      .post("/api/auth/login", formData)
+      .then((response) => {
+        // const responseData: LoginResponse = response.data;
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        return response;
+      }),
   logout: () =>
     axiosInstance.post("/api/auth/logout").then((response) => {
-      localStorage.removeItem("token");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       localStorage.removeItem("user_id");
       set((state) => ({
         user: null,

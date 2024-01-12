@@ -1,13 +1,13 @@
 import axios from "axios";
-import { redirect } from "next/navigation";
-import Swal from "sweetalert2";
+import SwalModal from "./public/constants/sweetAlertConfig";
 
 const axiosInstance = axios.create();
+let isRefreshing = false;
+let requestsQueue = [];
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Add your token logic here
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
@@ -21,23 +21,74 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    // Check for specific error condition or status code
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      if (window.location.pathname !== "/login") {
-        window.location = "/login";
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (!isRefreshing) {
+        isRefreshing = true;
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (!refreshToken) {
+          isRefreshing = false;
+          redirectToLogin();
+          return Promise.reject(error);
+        }
+
+        return axios
+          .get(`/api/auth/refresh`, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          })
+          .then((response) => {
+            localStorage.setItem("accessToken", response.data.accessToken);
+            localStorage.setItem("refreshToken", response.data.refreshToken);
+            originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+
+            // Replays all requests in the queue
+            requestsQueue.forEach((req) => {
+              req.resolve(axiosInstance(req.config));
+            });
+            requestsQueue = [];
+            return axiosInstance(originalRequest);
+          })
+          .catch((refreshError) => {
+            console.error("Token refresh failed:", refreshError);
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            redirectToLogin();
+            return Promise.reject(refreshError);
+          })
+          .finally(() => {
+            isRefreshing = false;
+          });
+      } else {
+        return new Promise((resolve, reject) => {
+          requestsQueue.push({
+            config: originalRequest,
+            resolve,
+            reject,
+          });
+        });
       }
     } else {
-      Swal.fire({
-        title: `เกิดข้อผิดพลาด`,
-        text: error.response.data.message,
+      SwalModal({
+        title: "เกิดข้อผิดพลาด",
+        text: error.response?.data?.message,
         icon: "error",
-        confirmButtonText: `ตกลง`,
-      });
+      })();
     }
 
     return Promise.reject(error);
   }
 );
+
+const redirectToLogin = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  if (window.location.pathname !== "/admin/login") {
+    window.location = "/admin/login";
+  }
+};
 
 export default axiosInstance;

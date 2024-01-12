@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+"use client"
+import { useEffect, useState } from "react";
 import Footer from "./footer";
 import Swal from "sweetalert2";
 import { usePathname } from "next/navigation";

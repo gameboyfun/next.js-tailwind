@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -12,6 +11,7 @@ import { useStore } from "../app/store";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { HeaderPropModel } from "@/models/header";
+import SwalModal from "@/public/constants/sweetAlertConfig";
 
 export default function Header({
   sidebarOpen,
@@ -28,12 +28,11 @@ export default function Header({
         router.push("/login");
       })
       .catch((error: any) => {
-        Swal.fire({
-          title: `เกิดข้อผิดพลาด`,
+        SwalModal({
+          title: "เกิดข้อผิดพลาด",
           text: error.response?.data?.message,
           icon: "error",
-          confirmButtonText: `ตกลง`,
-        });
+        })();
       });
   };
 
@@ -60,7 +59,7 @@ export default function Header({
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost avatar">
               <div className="w-10 rounded-full">
-                <img src={user?.imageProfile} />
+                <img src={user?.imageProfile || ''} />
               </div>
               <span className="text-white">
                 {`${user?.firstName || ""} ${user?.lastName || ""}`}
